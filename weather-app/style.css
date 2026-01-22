@@ -1,70 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
 
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #050505 url('https://images.unsplash.com/photo-1534274938760-42441c39a5e8?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    /* ใส่รูปภาพพื้นหลังที่นี่ */
+    background: url('thunderstorm-countryside') center/cover no-repeat;
     color: white;
 }
 
 .glass {
-    background: rgba(15, 18, 22, 0.7);
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(15, 18, 26, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.main-weather-bg {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.stat-box-small {
-    background: rgba(255, 255, 255, 0.04);
-    padding: 16px;
+.stat-card-small {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
     border-radius: 1.25rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
 }
 
-.section-card {
-    background: rgba(255, 255, 255, 0.03);
-    padding: 24px;
-    border-radius: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
-.uv-bar {
-    height: 6px;
-    background: linear-gradient(to right, #4ade80, #facc15, #f87171, #c084fc);
+.btn-layer {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 6px 15px;
     border-radius: 10px;
-    position: relative;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
 }
 
-.uv-dot {
-    width: 10px;
-    height: 10px;
-    background: white;
-    border: 2px solid black;
-    border-radius: 50%;
-    position: absolute;
-    top: -2px;
+.btn-layer:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
 }
 
-.compass {
-    width: 80px;
-    height: 80px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+.btn-layer.active {
+    background: #3b82f6;
+    border-color: #60a5fa;
 }
 
-.abs-n {
-    position: absolute;
-    top: 4px;
-    font-size: 8px;
-    color: gray;
+#map {
+    z-index: 1;
 }
 
-#map { filter: invert(90%) hue-rotate(180deg) brightness(95%); opacity: 0.8; }
+/* ปรับแต่ง Marker ปักหมุด */
+.leaflet-popup-content-wrapper {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: white !important;
+    backdrop-filter: blur(10px);
+}
