@@ -3,125 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Dashboard Pro</title>
+    <title>Weather & Interactive Map</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 md:p-10">
+<body class="min-h-screen p-4 md:p-8 flex items-center justify-center">
 
-    <div class="dashboard-container max-w-6xl w-full glass rounded-[2.5rem] overflow-hidden flex flex-col lg:flex-row">
+    <div class="main-container max-w-7xl w-full glass rounded-[2.5rem] overflow-hidden flex flex-col lg:flex-row shadow-2xl">
         
-        <!-- ฝั่งซ้าย: Main Weather (35%) -->
-        <aside class="lg:w-[35%] p-8 flex flex-col gap-6 border-r border-white/10 main-weather-bg">
-            <!-- Search -->
-            <div class="relative group">
-                <i data-lucide="map-pin" class="absolute left-4 top-3 w-5 h-5 text-gray-400"></i>
-                <input type="text" id="citySearch" placeholder="Hanoi, Vietnam" 
-                    class="w-full bg-white/10 border border-white/10 py-3 pl-12 pr-4 rounded-xl outline-none focus:bg-white/20 transition">
+        <!-- ฝั่งซ้าย: ข้อมูลอากาศ (Sidebar) -->
+        <aside class="lg:w-[380px] p-8 flex flex-col gap-6 border-r border-white/10 bg-black/20">
+            <!-- ค้นหา -->
+            <div class="relative">
+                <i data-lucide="map-pin" class="absolute left-4 top-3.5 w-5 h-5 text-gray-400"></i>
+                <input type="text" id="citySearch" placeholder="ค้นหาเมือง..." 
+                    class="w-full bg-white/10 border border-white/10 py-3 pl-12 pr-4 rounded-2xl outline-none focus:bg-white/20 transition text-white">
             </div>
 
-            <!-- Big Temp -->
-            <div class="text-center mt-10">
-                <h1 class="text-[120px] font-light leading-none" id="temp-main">28°</h1>
+            <!-- ข้อมูลหลัก -->
+            <div class="text-center py-6">
+                <h1 class="text-8xl font-light" id="temp-main">28°</h1>
                 <h2 class="text-3xl font-medium mt-2" id="desc-main">Rainy Day</h2>
-                <p class="text-gray-400 text-sm mt-4 px-6 leading-relaxed" id="summary">
-                    Today, expect a rainy day with temperatures reaching a maximum of 28°C. Make sure to grab your umbrella.
+                <p class="text-gray-400 text-sm mt-4 leading-relaxed" id="summary">
+                    ตรวจสอบสภาพอากาศและแผนที่แบบเรียลไทม์ได้ที่นี่
                 </p>
             </div>
 
-            <!-- Small Stats Grid -->
-            <div class="grid grid-cols-2 gap-3 mt-auto">
-                <div class="stat-box-small">
-                    <div class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-400">
-                        <i data-lucide="thermometer" class="w-3 h-3"></i> Feels Like
-                    </div>
-                    <div class="text-2xl font-semibold mt-1" id="feels-like">30°</div>
-                    <div class="text-[10px] text-gray-500 mt-1">Humidity making it warmer</div>
+            <!-- การ์ดข้อมูล 4 อันด้านล่าง -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="stat-card-small">
+                    <span class="text-[10px] text-gray-400 uppercase">Feels Like</span>
+                    <div class="text-xl font-bold" id="feels-like">30°</div>
                 </div>
-                <div class="stat-box-small">
-                    <div class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-400">
-                        <i data-lucide="droplets" class="w-3 h-3"></i> Precipitation
-                    </div>
-                    <div class="text-2xl font-semibold mt-1">2.3"</div>
-                    <div class="text-[10px] text-gray-500 mt-1">in last 24h</div>
+                <div class="stat-card-small">
+                    <span class="text-[10px] text-gray-400 uppercase">Precipitation</span>
+                    <div class="text-xl font-bold">2.3"</div>
                 </div>
-                <div class="stat-box-small">
-                    <div class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-400">
-                        <i data-lucide="eye" class="w-3 h-3"></i> Visibility
-                    </div>
-                    <div class="text-2xl font-semibold mt-1" id="visibility">6 mi</div>
+                <div class="stat-card-small">
+                    <span class="text-[10px] text-gray-400 uppercase">Visibility</span>
+                    <div class="text-xl font-bold" id="visibility">6 mi</div>
                 </div>
-                <div class="stat-box-small">
-                    <div class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-400">
-                        <i data-lucide="droplet" class="w-3 h-3"></i> Humidity
-                    </div>
-                    <div class="text-2xl font-semibold mt-1" id="humidity">82%</div>
+                <div class="stat-card-small">
+                    <span class="text-[10px] text-gray-400 uppercase">Humidity</span>
+                    <div class="text-xl font-bold" id="humidity">82%</div>
                 </div>
             </div>
         </aside>
 
-        <!-- ฝั่งขวา: Detailed Info (65%) -->
-        <main class="lg:w-[65%] p-8 flex flex-col gap-6 bg-[#0c0f14]/80">
-            
-            <!-- Hourly -->
-            <section class="section-card">
-                <div class="flex items-center gap-2 text-[11px] uppercase text-gray-500 mb-4">
-                    <i data-lucide="clock" class="w-4 h-4"></i> Hourly Forecast
-                </div>
-                <div class="flex justify-between overflow-x-auto gap-4 no-scrollbar" id="hourly-list">
-                    <!-- Hourly items will be injected here -->
-                </div>
-            </section>
-
-            <!-- 5-Day Forecast -->
-            <section class="section-card">
-                <div class="flex items-center gap-2 text-[11px] uppercase text-gray-500 mb-4">
-                    <i data-lucide="calendar" class="w-4 h-4"></i> 5-Day Forecast
-                </div>
-                <div class="flex justify-between" id="daily-list">
-                    <!-- Daily items will be injected here -->
-                </div>
-            </section>
-
-            <!-- Bottom Row: UV & Wind -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- UV Index -->
-                <div class="section-card">
-                    <div class="flex items-center gap-2 text-[11px] uppercase text-gray-500 mb-4">
-                        <i data-lucide="sun" class="w-4 h-4"></i> UV Index
-                    </div>
-                    <div class="text-3xl font-bold">3</div>
-                    <div class="text-lg mb-4">Moderate</div>
-                    <div class="uv-bar">
-                        <div class="uv-dot" style="left: 30%"></div>
-                    </div>
-                    <p class="text-[10px] text-gray-500 mt-3">Use sun protection until 16:00</p>
-                </div>
-
-                <!-- Wind -->
-                <div class="section-card">
-                    <div class="flex items-center gap-2 text-[11px] uppercase text-gray-500 mb-4">
-                        <i data-lucide="wind" class="w-4 h-4"></i> Wind
-                    </div>
-                    <div class="flex items-center gap-8">
-                        <div class="compass">
-                            <span class="abs-n">N</span>
-                            <i data-lucide="navigation" class="w-6 h-6 text-blue-400 rotate-45" id="wind-dir"></i>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold"><span id="wind-speed">3</span> <span class="text-sm font-normal text-gray-500">MPH</span></div>
-                            <div class="text-gray-500 text-xs">Wind</div>
-                            <div class="text-xl font-bold mt-2">9 <span class="text-sm font-normal text-gray-500">MPH</span></div>
-                            <div class="text-gray-500 text-xs">Gusts</div>
-                        </div>
-                    </div>
+        <!-- ฝั่งขวา: แผนที่ขนาดใหญ่พร้อมปุ่มควบคุม -->
+        <main class="flex-1 relative bg-black/40 p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i data-lucide="map" class="w-6 h-6"></i> 🗺️ แผนที่พยากรณ์
+                </h3>
+                <!-- ปุ่มเลือก Layer แผนที่ -->
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="changeLayer('precipitation_new')" class="btn-layer">🌧️ ฝน</button>
+                    <button onclick="changeLayer('clouds_new')" class="btn-layer">☁️ เมฆ</button>
+                    <button onclick="changeLayer('temp_new')" class="btn-layer">🌡️ อุณหภูมิ</button>
+                    <button onclick="changeLayer('wind_new')" class="btn-layer">💨 ลม</button>
                 </div>
             </div>
 
-            <!-- Map Area -->
-            <div id="map" class="rounded-3xl border border-white/10 overflow-hidden h-[200px]"></div>
+            <!-- ตัวแผนที่ -->
+            <div id="map" class="flex-1 rounded-3xl overflow-hidden border border-white/20 shadow-inner"></div>
         </main>
     </div>
 
